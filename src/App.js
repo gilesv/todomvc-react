@@ -2,8 +2,21 @@ import React from 'react';
 import Header from "./Header";
 import MainSection from "./MainSection";
 
-const useTodos = () => {
-  const [todos, setTodos] = React.useState([]);
+let getTodosNumber = () => {
+  let params = window.location.href.split('?')[1];
+  if (params) {
+    let str = params.split("todos=")[1];
+    return Object.is(Number(str), NaN) ? 0 : Number(str);
+  }
+  return 0;
+}
+
+let defaultTodos = Array(getTodosNumber()).fill(0).map((_, i) => {
+  return { id: i, completed: false, text: `Todo #${i}` };
+});
+
+const useTodos = (defaultTodos = []) => {
+  const [todos, setTodos] = React.useState(defaultTodos);
 
   const addTodo = text => {
     setTodos([
@@ -64,7 +77,7 @@ export default function App() {
   const [
     todos,
     { addTodo, deleteTodo, editTodo, toggleTodo, toggleAllTodo, clearCompleted }
-  ] = useTodos();
+  ] = useTodos(defaultTodos);
 
   return (
     <div className="todoapp">
